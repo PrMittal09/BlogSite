@@ -16,6 +16,8 @@ import { ExcerptPipe } from './custompipes/excerpt.pipe';
 import { SlugPipe } from './custompipes/slug.pipe';
 import { BlogCardComponent } from './components/blog-card/blog-card.component';
 import { BlogComponent } from './components/blog/blog.component';
+import { AngularFireAuthModule } from  '@angular/fire/auth';
+import { AuthGuard } from './guards/auth.guard';
 @NgModule({
   declarations: [
     AppComponent,
@@ -35,13 +37,14 @@ import { BlogComponent } from './components/blog/blog.component';
 	NgMaterialModule,
 	 RouterModule.forRoot([
       { path: '', component: HomeComponent, pathMatch: 'full' },
-	  { path: 'addpost', component: BlogEditorComponent },
+	  { path: 'addpost', component: BlogEditorComponent, canActivate: [AuthGuard] },
 	  { path: 'blog/:id/:slug', component: BlogComponent },
-	  { path: 'editpost/:id', component: BlogEditorComponent },
+	  { path: 'editpost/:id', component: BlogEditorComponent, canActivate: [AuthGuard]},
       { path: '**', component: HomeComponent }
     ]),
 	FormsModule,
-	CKEditorModule
+  CKEditorModule,
+  AngularFireAuthModule
   ],
   providers: [],
   bootstrap: [AppComponent]

@@ -1,4 +1,4 @@
-<ng-template #emptyblog>
+<ng-template #emptyblog class="spinner">
     <div class="spinner-container">
         <mat-spinner></mat-spinner>
     </div>
@@ -16,8 +16,8 @@
             </mat-card-content>
             <mat-divider></mat-divider>
             <mat-card-actions align="end">
-                <ng-container>
-                    <button mat-raised-button color="accent" [routerLink]="['/editpost',post.postId]">Edit</button>
+                <ng-container  *ngIf="appUser">
+                    <button mat-raised-button color="primary" [routerLink]="['/editpost',post.postId]">Edit</button>
                     <button mat-raised-button color="warn" (click)="delete(post.postId)">Delete</button>
                 </ng-container>
                 <span class="spacer"></span>
