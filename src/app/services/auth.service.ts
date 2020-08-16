@@ -21,11 +21,9 @@ export class AuthService {
     
     this.appUser$ = this.afAuth.authState.pipe(
     switchMap(user => {
-      // If the user is logged in, return the user details.
       if (user) {
         return this.db.doc<AppUser>(`appusers/${user.uid}`).valueChanges();
       } else {
-        // If the user is NOT logged in, return null.
         return of(null);
       }
     })

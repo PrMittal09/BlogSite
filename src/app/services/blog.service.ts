@@ -2,7 +2,8 @@ import { Injectable } from '@angular/core';
 import { AngularFirestore } from  '@angular/fire/firestore';
 import { Post } from  '../models/post';
 import { map } from  'rxjs/operators';
-import { Observable } from  'rxjs';
+import { Observable, Subject } from  'rxjs';
+
 @Injectable({
   providedIn: 'root'
 })
@@ -22,7 +23,7 @@ createPost(post: Post) {
       return actions.map(
         c => ({
           postId: c.payload.doc.id,
-          ...c.payload.doc.data()
+          ...c.payload.doc.data() as Post
         }));
     }));
   return blogs;
@@ -38,4 +39,13 @@ updatePost(postId: string, post: Post) {
 	const  putData = JSON.parse(JSON.stringify(post));
 	return  this.db.doc('blogs/' + postId).update(putData);
 }
+
+editValueSource = new Subject<string>();
+
+editValue$ = this.editValueSource.asObservable();
+
+getEditValue(value) {
+    this.editValueSource.next(value);
+  }
+
 }

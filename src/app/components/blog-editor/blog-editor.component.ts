@@ -4,6 +4,8 @@ import { Post } from 'src/app/models/post';
 import { DatePipe } from '@angular/common';
 import { BlogService } from 'src/app/services/blog.service';
 import { Router, ActivatedRoute } from '@angular/router';
+import { AuthService } from 'src/app/services/auth.service';
+import { AppUser } from 'src/app/models/appuser';
 
 @Component({
   selector: 'app-blog-editor',
@@ -17,15 +19,19 @@ export class BlogEditorComponent implements OnInit {
 	postData = new Post();
 	formTitle = 'Add';
 	postId = '';
+  appUser: AppUser;
+  editvalue:boolean=false;
 
   constructor(private  _route: ActivatedRoute,
   private  datePipe: DatePipe,
   private  blogService: BlogService,
+  private authService: AuthService,
   private  _router: Router)
 	{
 	if (this._route.snapshot.params['id']) {
 		this.postId = this._route.snapshot.paramMap.get('id');
-	} 
+  } 
+  this.authService.appUser$.subscribe(appUser  =>  this.appUser  =  appUser);
 	}
 
   ngOnInit() {
@@ -43,7 +49,8 @@ export class BlogEditorComponent implements OnInit {
   }
 setPostFormData(postFormData) {
 	this.postData.title = postFormData.title;
-	this.postData.content = postFormData.content;
+  this.postData.content = postFormData.content;
+  this.postData.username= this.appUser.name;
 }
 
 setEditorConfig() {
@@ -66,6 +73,8 @@ setEditorConfig() {
 
 saveBlogPost() {
 if (this.postId) {
+  this.postData.username=this.appUser.name;
+  this.blogService.getEditValue("edit");
   this.blogService.updatePost(this.postId, this.postData).then(
     () => {
       this._router.navigate(['/']);
@@ -73,6 +82,8 @@ if (this.postId) {
   );
 } else {
   this.postData.createdDate = this.datePipe.transform(Date.now(), 'MM-dd-yyyy HH:mm');
+  this.postData.username= this.appUser.name;
+  this.blogService.getEditValue("save");
   this.blogService.createPost(this.postData).then(
     () => {
       this._router.navigate(['/']);
